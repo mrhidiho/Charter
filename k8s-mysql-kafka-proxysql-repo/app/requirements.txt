@@ -1,0 +1,7 @@
+SQLAlchemy>=2.0
+aiomysql
+PyMySQL
+aiokafka
+kafka-python
+aiohttp
+alembic
