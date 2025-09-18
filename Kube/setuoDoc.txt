@@ -1,0 +1,13 @@
+make helm-install
+# or directly:
+helm install data-pipeline charts/k8s-mysql-kafka-proxysql -n apps -f charts/k8s-mysql-kafka-proxysql/values.yaml
+
+
+
+How to use
+	•	Ensure your repo is public or that your org allows GHCR with GITHUB_TOKEN (default works).
+	•	If you want to push to a different registry, edit IMAGE_NAME at the top of the workflow or pass it as a repo/Org secret.
+	•	After pushing this repo to GitHub:
+	•	Create a main branch and push.
+	•	On PRs: CI will lint Helm and build the image (no push).
+	•	On merges/pushes to main: CI will build and push your image to ghcr.io/<owner>/py-stack.
