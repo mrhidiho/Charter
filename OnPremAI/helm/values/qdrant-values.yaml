@@ -1,0 +1,16 @@
+replicaCount: 1
+persistence:
+  enabled: true
+  size: 200Gi
+resources:
+  requests:
+    cpu: "2"
+    memory: "8Gi"
+  limits:
+    cpu: "4"
+    memory: "16Gi"
+service:
+  type: ClusterIP
+env:
+  QDRANT__SERVICE__GRPC_PORT: "6334"
+  QDRANT__SERVICE__HTTP_PORT: "6333"

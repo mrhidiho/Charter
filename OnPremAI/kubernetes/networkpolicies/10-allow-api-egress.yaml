@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-allow-egress-to-backends
+  namespace: api
+spec:
+  podSelector: {}
+  policyTypes: ["Egress"]
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: llm
+    - namespaceSelector:
+        matchLabels:
+          name: vector
+    - namespaceSelector:
+        matchLabels:
+          name: search

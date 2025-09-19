@@ -1,0 +1,36 @@
+image:
+  repository: registry.intra.charter.example/ai/vllm
+  tag: 0.5.0
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 8000
+
+resources:
+  limits:
+    nvidia.com/gpu: 1
+  requests:
+    cpu: "2"
+    memory: "8Gi"
+
+model:
+  name: /models/llama-3.1-8b-instruct  # path inside the pod (mounted PVC/NFS)
+  dtype: "float16"
+  max_model_len: 8192
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+persistence:
+  enabled: true
+  existingClaim: ""
+  size: 500Gi
+  accessModes: ["ReadOnlyMany"]
+
+extraArgs: []  # e.g., ["--tensor-parallel-size", "2"]

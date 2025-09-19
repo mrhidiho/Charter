@@ -1,0 +1,24 @@
+image:
+  repository: registry.intra.charter.example/ai/rag-api
+  tag: v0.1.0
+  pullPolicy: IfNotPresent
+
+replicaCount: 2
+
+service:
+  type: ClusterIP
+  port: 8080
+
+env:
+  QDRANT_URL: http://qdrant.vector.svc.cluster.local:6333
+  OPENSEARCH_URL: http://opensearch.search.svc.cluster.local:9200
+  LLM_URL: http://vllm.llm.svc.cluster.local:8000
+  TOP_K: "8"
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1Gi"
+  limits:
+    cpu: "2"
+    memory: "2Gi"

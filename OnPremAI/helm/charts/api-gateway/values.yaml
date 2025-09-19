@@ -1,0 +1,22 @@
+image:
+  repository: registry.intra.charter.example/base/nginx
+  tag: stable
+  pullPolicy: IfNotPresent
+
+replicaCount: 2
+
+service:
+  type: ClusterIP
+  port: 80
+
+proxy:
+  upstream: http://rag-api.api.svc.cluster.local:8080
+  allowed_subnets: 10.0.0.0/8
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+  limits:
+    cpu: "1"
+    memory: "512Mi"
