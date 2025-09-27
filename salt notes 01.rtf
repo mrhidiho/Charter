@@ -1,0 +1,101 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2865
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 .AppleSystemUIFontMonospaced-Regular;}
+{\colortbl;\red255\green255\blue255;\red155\green162\blue177;\red214\green85\blue98;\red197\green136\blue83;
+}
+{\*\expandedcolortbl;;\cssrgb\c67059\c69804\c74902;\cssrgb\c87843\c42353\c45882;\cssrgb\c81961\c60392\c40000;
+}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Making them modular based on OS image type.\
+What is the time line for moving to EKS?\
+\
+Salt-ng requirements\
+\
+If staying on old salt, can we make it safer?\
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\fs26 \cf2 \{% \cf3 set\cf2  os_family = grains['os_family'] %\}\
+\{% \cf3 set\cf2  os = grains['os'] %\}\
+\{% \cf3 set\cf2  os_version = grains['osmajorrelease'] %\}\
+\{% \cf3 set\cf2  is_ubuntu = os == 'Ubuntu' %\}\
+\{% \cf3 set\cf2  is_centos7 = os == 'CentOS' and os_version == '7' %\}\
+\{% \cf3 set\cf2  is_amazon_linux2 = os == 'Amazon' and os_version == '2' %\}\
+\
+\{% \cf3 if\cf2  is_ubuntu %\}\
+install_packages_ubuntu:\
+  pkg.installed:\
+    - pkgs:\
+      - curl\
+      - net-tools\
+      - splunkforwarder\
+\{% \cf3 elif\cf2  is_centos7 %\}\
+install_packages_centos7:\
+  pkg.installed:\
+    - pkgs:\
+      - curl\
+      - net-tools\
+      - splunkforwarder\
+\{% \cf3 elif\cf2  is_amazon_linux2 %\}\
+install_packages_amazonlinux2:\
+  pkg.installed:\
+    - pkgs:\
+      - curl\
+      - tar\
+      - splunkforwarder\
+\{% \cf3 else\cf2  %\}\
+unsupported_os:\
+  test.fail_without_changes:\
+    - name: "Unsupported OS: \cf4 \{\{ os \}\}\cf2  \cf4 \{\{ os_version \}\}\cf2 "\
+\{% \cf3 endif\cf2  %\}\
+\
+\
+\
+\{% \cf3 if\cf2  pillar.get('install_splunk', False) %\}\
+install_splunk:\
+  pkg.installed:\
+    - name: splunkforwarder\
+\{% \cf3 endif\cf2  %\}\
+\
+\'91\'92\'92Map.jinja\'92\'92\'92\
+\{% \cf3 set\cf2  os_map = salt['grains.filter_by'](\{\
+    'RedHat': \{\
+        'default': \{\
+            'pkgs': ['curl', 'net-tools', 'splunkforwarder'],\
+        \},\
+        '7': \{\
+            'pkgs': ['curl', 'net-tools', 'splunkforwarder'],\
+        \},\
+        '8': \{\
+            'pkgs': ['curl', 'iproute', 'splunkforwarder'],\
+        \}\
+    \},\
+    'Debian': \{\
+        'default': \{\
+            'pkgs': ['curl', 'net-tools', 'splunkforwarder'],\
+        \},\
+        '20': \{\
+            'pkgs': ['curl', 'iputils-ping', 'splunkforwarder'],\
+        \},\
+        '22': \{\
+            'pkgs': ['curl', 'iputils-ping', 'splunkforwarder'],\
+        \}\
+    \},\
+    'Amazon': \{\
+        '2': \{\
+            'pkgs': ['curl', 'tar', 'splunkforwarder'],\
+        \},\
+        'default': \{\
+            'pkgs': ['curl', 'tar', 'splunkforwarder'],\
+        \}\
+    \}\
+\}, grain='os_family', merge=salt['grains.filter_by'](\{\
+    'Amazon': \{\
+        '2': \{\
+            'pkgs': ['curl', 'tar', 'splunkforwarder'],\
+        \}\
+    \}\
+\}, grain='osmajorrelease') ) %\}}
