@@ -1,0 +1,2 @@
+splunkforwarder:
+  auto_start_splunk: true

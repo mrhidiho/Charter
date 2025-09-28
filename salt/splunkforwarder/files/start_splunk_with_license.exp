@@ -1,0 +1,6 @@
+#!/usr/bin/expect -f
+
+spawn sudo /opt/splunkforwarder/bin/splunk start
+expect "Do you agree with this license? [y/n]"
+send "y\r"
+expect eof

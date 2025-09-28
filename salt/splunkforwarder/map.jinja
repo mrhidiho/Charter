@@ -1,0 +1,38 @@
+{% set os_map = salt['grains.filter_by']({
+    'RedHat': {
+        'default': {
+            'pkgs': ['curl', 'net-tools', 'splunkforwarder'],
+        },
+        '7': {
+            'pkgs': ['curl', 'net-tools', 'splunkforwarder'],
+        },
+        '8': {
+            'pkgs': ['curl', 'iproute', 'splunkforwarder'],
+        }
+    },
+    'Debian': {
+        'default': {
+            'pkgs': ['curl', 'net-tools', 'splunkforwarder'],
+        },
+        '20': {
+            'pkgs': ['curl', 'iputils-ping', 'splunkforwarder'],
+        },
+        '22': {
+            'pkgs': ['curl', 'iputils-ping', 'splunkforwarder'],
+        }
+    },
+    'Amazon': {
+        '2': {
+            'pkgs': ['curl', 'tar', 'splunkforwarder'],
+        },
+        'default': {
+            'pkgs': ['curl', 'tar', 'splunkforwarder'],
+        }
+    }
+}, grain='os_family', merge=salt['grains.filter_by']({
+    'Amazon': {
+        '2': {
+            'pkgs': ['curl', 'tar', 'splunkforwarder'],
+        }
+    }
+}, grain='osmajorrelease') ) %}
